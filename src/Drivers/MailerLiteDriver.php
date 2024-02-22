@@ -38,18 +38,15 @@ class MailerLiteDriver implements Driver
         string $listName = '',
         array $options = []
     ): bool {
-        $response = $this->mailerLite->subscribers->create([
-            'email' => $email,
-        ]);
-
         if (strlen($listName) > 0) {
             $list = $this->lists->findByName($listName);
-
-            $response = $this->mailerLite->groups->assignSubscriber(
-                groupId: $list->getId(),
-                subscriberId: $this->extractSubscriberIdFromResponse($response),
-            );
         }
+
+        $response = $this->mailerLite->subscribers->create([
+            'email' => $email,
+            'fields' => $properties,
+            'groups' => isset($list) ? [$list->getId()] : [],
+        ]);
 
         return $response['status_code'] === 200;
     }
@@ -88,9 +85,5 @@ class MailerLiteDriver implements Driver
     {
         // fixme
         return true;
-    }
-
-    protected function extractSubscriberIdFromResponse(string $response): string {
-        return json_decode($response)['data']['id'];
     }
 }
