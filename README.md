@@ -108,6 +108,14 @@ Next, you must provide values for the API key and `list.subscribers.id`. You'll 
 
 The `endpoint` config value must be set to null.
 
+### Using MailerLite
+
+To use MailerLite, install this extra package.
+
+```bash
+composer require mailerlite/mailerlite-php
+```
+
 ## Usage
 
 After you've installed the package and filled in the values in the config-file working with this package will be a breeze. All the following examples use the facade. Don't forget to import it at the top of your file.
