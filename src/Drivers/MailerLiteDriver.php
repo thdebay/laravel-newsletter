@@ -38,18 +38,20 @@ class MailerLiteDriver implements Driver
         string $listName = '',
         array $options = []
     ): bool {
-        $list = $this->lists->findByName($listName);
-
         $response = $this->mailerLite->subscribers->create([
             'email' => $email,
         ]);
 
-        $this->mailerLite->groups->assignSubscriber(
-            groupId: $list->getId(),
-            subscriberId: $this->extractSubscriberIdFromResponse($response),
-        );
+        if (strlen($listName) > 0) {
+            $list = $this->lists->findByName($listName);
 
-        return true; // fixme handle errors
+            $response = $this->mailerLite->groups->assignSubscriber(
+                groupId: $list->getId(),
+                subscriberId: $this->extractSubscriberIdFromResponse($response),
+            );
+        }
+
+        return $response['status_code'] === 200;
     }
 
     public function subscribeOrUpdate(
